@@ -296,11 +296,11 @@ func (db *sqlite3) GetColumns(tableName string) ([]string, map[string]*core.Colu
 	if name == "" {
 		return nil, nil, errors.New("no table named " + tableName)
 	}
-
 	nStart := strings.Index(name, "(")
 	nEnd := strings.LastIndex(name, ")")
 	reg := regexp.MustCompile(`[^\(,\)]*(\([^\(]*\))?`)
 	colCreates := reg.FindAllString(name[nStart+1:nEnd], -1)
+
 	cols := make(map[string]*core.Column)
 	colSeq := make([]string, 0)
 	for _, colStr := range colCreates {
@@ -344,9 +344,11 @@ func (db *sqlite3) GetColumns(tableName string) ([]string, map[string]*core.Colu
 					col.Nullable = true
 				}
 			case "DEFAULT":
-				col.Default = fields[idx+1]
-				col.DefaultIsEmpty = false
+				// col.Default = fields[idx+1]
+				col.Default = ""
+				col.DefaultIsEmpty = true
 			}
+
 		}
 		if !col.SQLType.IsNumeric() && !col.DefaultIsEmpty {
 			col.Default = "'" + col.Default + "'"

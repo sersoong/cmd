@@ -385,7 +385,9 @@ func (engine *Engine) DBMetas() ([]*core.Table, error) {
 			return nil, err
 		}
 		for _, name := range colSeq {
-			table.AddColumn(cols[name])
+			if name != "datetime('now','localtime'))" {
+				table.AddColumn(cols[name])
+			}
 		}
 		indexes, err := engine.dialect.GetIndexes(table.Name)
 		if err != nil {
